@@ -7,9 +7,9 @@ class Layerwise_grassmann_PCA(AdjacentMag.SingleAdjacentMag):
     def __call__(self, csvFolder, layerNum, totalSampleNum, loadFlag=False, prefix=None):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._grassmann_pca_conv(csvFolder, layerNum, totalSampleNum=totalSampleNum, loadFlag=loadFlag, prefix=prefix)
+            result = self._grassmann_pca_conv(csvFolder, _layerNum, totalSampleNum=totalSampleNum, loadFlag=loadFlag, prefix=prefix)
         elif self.isFcLayer(_layerNum):
-            result = self._grassmann_pca_fc(csvFolder, layerNum, totalSampleNum=totalSampleNum, loadFlag=loadFlag, prefix=prefix)
+            result = self._grassmann_pca_fc(csvFolder, _layerNum, totalSampleNum=totalSampleNum, loadFlag=loadFlag, prefix=prefix)
         else:
             result = None
         return result
@@ -59,9 +59,9 @@ class Layerwise_grassmann_PCA_plural(AdjacentMag.SingleAdjacentMag):
     def __call__(self, csvFolderList, layerNum, totalSampleNum, loadFlag=False, prefix=None, mask=None, reCenterizeFlag=True):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._grassmann_pca_plural_conv(csvFolderList, layerNum, totalSampleNum=totalSampleNum, loadFlag=loadFlag, prefix=prefix, mask=mask, reCenterizeFlag=reCenterizeFlag)
+            result = self._grassmann_pca_plural_conv(csvFolderList, _layerNum, totalSampleNum=totalSampleNum, loadFlag=loadFlag, prefix=prefix, mask=mask, reCenterizeFlag=reCenterizeFlag)
         elif self.isFcLayer(_layerNum):
-            result = self._grassmann_pca_plural_fc(csvFolderList, layerNum, totalSampleNum=totalSampleNum, loadFlag=loadFlag, prefix=prefix, mask=mask, reCenterizeFlag=reCenterizeFlag)
+            result = self._grassmann_pca_plural_fc(csvFolderList, _layerNum, totalSampleNum=totalSampleNum, loadFlag=loadFlag, prefix=prefix, mask=mask, reCenterizeFlag=reCenterizeFlag)
         else:
             result = None
         return result

@@ -7,9 +7,9 @@ class Layerwise1stMag(AdjacentMag.DoubleAdjacentMag):
     def __call__(self, csvFolder, layerNum, totalSampleNum):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._pca_1stMag_layerwise_conv(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_1stMag_layerwise_conv(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         elif self.isFcLayer(_layerNum):
-            result = self._pca_1stMag_layerwise_fc(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_1stMag_layerwise_fc(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         else:
             result = None
         return result
@@ -34,7 +34,7 @@ class Layerwise1stMag(AdjacentMag.DoubleAdjacentMag):
 
         for i in tqdm(range(totalSampleNum - 1)):
             if i == 0: basis1, basis2 = self._get_adjacent_basis_fc(csvFolder, layerNum, i, isVerbose=True)
-            else: basis1, basis2 = self._get_adjacent_basis_fc(csvFolder, layerNum, i)                
+            else: basis1, basis2 = self._get_adjacent_basis_fc(csvFolder, layerNum, i)          
             magContainer.append(self.smTool.calc_magnitude(basis1, basis2))
         
         result = cp.array(magContainer).get()
@@ -45,9 +45,9 @@ class Layerwise1stRBFMag(AdjacentMag.DoubleAdjacentRBFMag):
     def __call__(self, csvFolder, layerNum, totalSampleNum, gamma=5):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._pca_1stMag_layerwise_conv(csvFolder, layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
+            result = self._pca_1stRBFMag_layerwise_conv(csvFolder, _layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
         elif self.isFcLayer(_layerNum):
-            result = self._pca_1stMag_layerwise_fc(csvFolder, layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
+            result = self._pca_1stRBFMag_layerwise_fc(csvFolder, _layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
         else:
             result = None
         return result
@@ -87,9 +87,9 @@ class Layerwise1stMag_decomposition(AdjacentMag.TripleAdjacentMag):
     def __call__(self, csvFolder, layerNum, totalSampleNum):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._pca_1stMag_decomposition_conv(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_1stMag_decomposition_conv(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         elif self.isFcLayer(_layerNum):
-            result = self._pca_1stMag_decomposition_fc(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_1stMag_decomposition_fc(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         else:
             result = None
         return result
@@ -133,9 +133,9 @@ class Layerwise2ndMag(AdjacentMag.TripleAdjacentMag):
     def __call__(self, csvFolder, layerNum, totalSampleNum):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._pca_2ndMag_layerwise_conv(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_2ndMag_layerwise_conv(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         elif self.isFcLayer(_layerNum):
-            result = self._pca_2ndMag_layerwise_fc(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_2ndMag_layerwise_fc(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         else:
             result = None
         return result
@@ -174,9 +174,9 @@ class Layerwise2ndRBFMag(AdjacentMag.TripleAdjacentRBFMag):
     def __call__(self, csvFolder, layerNum, totalSampleNum, gamma=5):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._pca_2ndRBFMag_layerwise_conv(csvFolder, layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
+            result = self._pca_2ndRBFMag_layerwise_conv(csvFolder, _layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
         elif self.isFcLayer(_layerNum):
-            result = self._pca_2ndRBFMag_layerwise_fc(csvFolder, layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
+            result = self._pca_2ndRBFMag_layerwise_fc(csvFolder, _layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
         else:
             result = None
         return result
@@ -221,9 +221,9 @@ class Layerwise2ndMag_decomposition(AdjacentMag.TripleAdjacentMag):
     def __call__(self, csvFolder, layerNum, totalSampleNum):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._pca_2ndMag_decomposition_conv(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_2ndMag_decomposition_conv(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         elif self.isFcLayer(_layerNum):
-            result = self._pca_2ndMag_decomposition_fc(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_2ndMag_decomposition_fc(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         else:
             result = None
         return result
@@ -267,9 +267,9 @@ class Layerwise2ndRBFMag_decomposition(AdjacentMag.TripleAdjacentRBFMag):
     def __call__(self, csvFolder, layerNum, totalSampleNum, gamma=5):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._pca_2ndRBFMag_decomposition_conv(csvFolder, layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
+            result = self._pca_2ndRBFMag_decomposition_conv(csvFolder, _layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
         elif self.isFcLayer(_layerNum):
-            result = self._pca_2ndRBFMag_decomposition_fc(csvFolder, layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
+            result = self._pca_2ndRBFMag_decomposition_fc(csvFolder, _layerNum, gamma=gamma, totalSampleNum=totalSampleNum)
         else:
             result = None
         return result
@@ -331,9 +331,9 @@ class Layerwise_geodesic_decomposition(AdjacentMag.SingleAdjacentMag):
     def __call__(self, csvFolder, layerNum, totalSampleNum):
         _layerNum = layerNum + 1
         if self.isConvLayer(_layerNum):
-            result = self._pca_geodesic_decomposition_conv(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_geodesic_decomposition_conv(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         elif self.isFcLayer(_layerNum):
-            result = self._pca_geodesic_decomposition_fc(csvFolder, layerNum, totalSampleNum=totalSampleNum)
+            result = self._pca_geodesic_decomposition_fc(csvFolder, _layerNum, totalSampleNum=totalSampleNum)
         else:
             result = None
         return result
