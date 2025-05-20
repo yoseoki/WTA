@@ -37,21 +37,21 @@ class SingleAdjacentMag(metaclass=ABCMeta):
             weight_layer1 = cp.swapaxes(weight_layer1, 0, 1)
             dataArray1 = cp.transpose(cp.reshape(weight_layer1, (in_channels, out_channels * ker_size)))
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
-            basis1 = basis1[:,:in_channels]
+            basis1 = basis1[:,:in_channels-1]
         else:
             if isVerbose:
                 print("existing dimension(in_channels * ker_size) : {}".format(in_channels * ker_size))
                 print("subspace dimension(out_channels) : {}".format(out_channels))
             dataArray1 = cp.transpose(cp.reshape(weight_layer1, (out_channels, in_channels * ker_size)))
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
-            basis1 = basis1[:,:out_channels]
+            basis1 = basis1[:,:out_channels-1]
         
         return basis1
     
     def _get_adjacent_basis_fc(self, csvFolder, layerNum, t, isVerbose=False):
         weight_layer1 = ParamIO.makeDataArray(csvFolder + "/weights_epoch{:03d}.safetensors".format(t), layerNum)
         out_dims = weight_layer1.shape[0]
-        in_dims = weight_layer1.shape[1]
+        in_dims = weight_layer1.shape[1] 
         
         if in_dims < out_dims:
             if isVerbose:
@@ -59,14 +59,14 @@ class SingleAdjacentMag(metaclass=ABCMeta):
                 print("subspace dimension(in_dims) : {}".format(in_dims))
             dataArray1 = weight_layer1
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
-            basis1 = basis1[:,:in_dims]
+            basis1 = basis1[:,:in_dims-1]
         else:
             if isVerbose:
                 print("existing dimension(in_dims) : {}".format(in_dims))
                 print("subspace dimension(out_dims) : {}".format(out_dims))
             dataArray1 = cp.transpose(weight_layer1)
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
-            basis1 = basis1[:,:out_dims]
+            basis1 = basis1[:,:out_dims-1]
         
         return basis1
 
@@ -106,8 +106,8 @@ class DoubleAdjacentMag(metaclass=ABCMeta):
             dataArray2 = cp.transpose(cp.reshape(weight_layer2, (in_channels, out_channels * ker_size)))
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
             _, basis2 = self.pcaTool.pca_lowcost(dataArray2)
-            basis1 = basis1[:,:in_channels]
-            basis2 = basis2[:,:in_channels]
+            basis1 = basis1[:,:in_channels-1]
+            basis2 = basis2[:,:in_channels-1]
         else:
             if isVerbose:
                 print("existing dimension(in_channels * ker_size) : {}".format(in_channels * ker_size))
@@ -116,8 +116,8 @@ class DoubleAdjacentMag(metaclass=ABCMeta):
             dataArray2 = cp.transpose(cp.reshape(weight_layer2, (out_channels, in_channels * ker_size)))
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
             _, basis2 = self.pcaTool.pca_lowcost(dataArray2)
-            basis1 = basis1[:,:out_channels]
-            basis2 = basis2[:,:out_channels]
+            basis1 = basis1[:,:out_channels-1]
+            basis2 = basis2[:,:out_channels-1]
         
         return [basis1, basis2]
     
@@ -135,8 +135,8 @@ class DoubleAdjacentMag(metaclass=ABCMeta):
             dataArray2 = weight_layer2
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
             _, basis2 = self.pcaTool.pca_lowcost(dataArray2)
-            basis1 = basis1[:,:in_dims]
-            basis2 = basis2[:,:in_dims]
+            basis1 = basis1[:,:in_dims-1]
+            basis2 = basis2[:,:in_dims-1]
         else:
             if isVerbose:
                 print("existing dimension(in_dims) : {}".format(in_dims))
@@ -145,8 +145,8 @@ class DoubleAdjacentMag(metaclass=ABCMeta):
             dataArray2 = cp.transpose(weight_layer2)
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
             _, basis2 = self.pcaTool.pca_lowcost(dataArray2)
-            basis1 = basis1[:,:out_dims]
-            basis2 = basis2[:,:out_dims]
+            basis1 = basis1[:,:out_dims-1]
+            basis2 = basis2[:,:out_dims-1]
         
         return [basis1, basis2]
 
@@ -190,9 +190,9 @@ class TripleAdjacentMag(metaclass=ABCMeta):
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
             _, basis2 = self.pcaTool.pca_lowcost(dataArray2)
             _, basis3 = self.pcaTool.pca_lowcost(dataArray3)
-            basis1 = basis1[:,:in_channels]
-            basis2 = basis2[:,:in_channels]
-            basis3 = basis3[:,:in_channels]
+            basis1 = basis1[:,:in_channels-1]
+            basis2 = basis2[:,:in_channels-1]
+            basis3 = basis3[:,:in_channels-1]
         else:
             if isVerbose:
                 print("existing dimension(in_channels * ker_size) : {}".format(in_channels * ker_size))
@@ -203,9 +203,9 @@ class TripleAdjacentMag(metaclass=ABCMeta):
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
             _, basis2 = self.pcaTool.pca_lowcost(dataArray2)
             _, basis3 = self.pcaTool.pca_lowcost(dataArray3)
-            basis1 = basis1[:,:out_channels]
-            basis2 = basis2[:,:out_channels]
-            basis3 = basis3[:,:out_channels]
+            basis1 = basis1[:,:out_channels-1]
+            basis2 = basis2[:,:out_channels-1]
+            basis3 = basis3[:,:out_channels-1]
         
         return [basis1, basis2, basis3]
     
@@ -226,9 +226,9 @@ class TripleAdjacentMag(metaclass=ABCMeta):
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
             _, basis2 = self.pcaTool.pca_lowcost(dataArray2)
             _, basis3 = self.pcaTool.pca_lowcost(dataArray3)
-            basis1 = basis1[:,:in_dims]
-            basis2 = basis2[:,:in_dims]
-            basis3 = basis3[:,:in_dims]
+            basis1 = basis1[:,:in_dims-1]
+            basis2 = basis2[:,:in_dims-1]
+            basis3 = basis3[:,:in_dims-1]
         else:
             if isVerbose:
                 print("existing dimension(in_dims) : {}".format(in_dims))
@@ -239,9 +239,9 @@ class TripleAdjacentMag(metaclass=ABCMeta):
             _, basis1 = self.pcaTool.pca_lowcost(dataArray1)
             _, basis2 = self.pcaTool.pca_lowcost(dataArray2)
             _, basis3 = self.pcaTool.pca_lowcost(dataArray3)
-            basis1 = basis1[:,:out_dims]
-            basis2 = basis2[:,:out_dims]
-            basis3 = basis3[:,:out_dims]
+            basis1 = basis1[:,:out_dims-1]
+            basis2 = basis2[:,:out_dims-1]
+            basis3 = basis3[:,:out_dims-1]
         
         return [basis1, basis2, basis3]
     
@@ -315,14 +315,14 @@ class SingleAdjacentRBFMag(metaclass=ABCMeta):
             weight_layer1 = cp.swapaxes(weight_layer1, 0, 1)
             dataArray1 = cp.transpose(cp.reshape(weight_layer1, (in_channels, out_channels * ker_size)))
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
-            basis1 = basis1[:,:in_channels]
+            basis1 = basis1[:,:in_channels-1]
         else:
             if isVerbose:
                 print("existing dimension(in_channels * ker_size) : {}".format(in_channels * ker_size))
                 print("subspace dimension(out_channels) : {}".format(out_channels))
             dataArray1 = cp.transpose(cp.reshape(weight_layer1, (out_channels, in_channels * ker_size)))
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
-            basis1 = basis1[:,:out_channels]
+            basis1 = basis1[:,:out_channels-1]
         
         return basis1
     
@@ -337,14 +337,14 @@ class SingleAdjacentRBFMag(metaclass=ABCMeta):
                 print("subspace dimension(in_dims) : {}".format(in_dims))
             dataArray1 = weight_layer1
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
-            basis1 = basis1[:,:in_dims]
+            basis1 = basis1[:,:in_dims-1]
         else:
             if isVerbose:
                 print("existing dimension(in_dims) : {}".format(in_dims))
                 print("subspace dimension(out_dims) : {}".format(out_dims))
             dataArray1 = cp.transpose(weight_layer1)
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
-            basis1 = basis1[:,:out_dims]
+            basis1 = basis1[:,:out_dims-1]
         
         return basis1
 
@@ -429,8 +429,8 @@ class DoubleAdjacentRBFMag(metaclass=ABCMeta):
             dataArray2 = cp.transpose(cp.reshape(weight_layer2, (in_channels, out_channels * ker_size)))
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
             _, basis2 = self.pcaTool.rbf_kernel_pca(dataArray2, gamma)
-            basis1 = basis1[:,:in_channels]
-            basis2 = basis2[:,:in_channels]
+            basis1 = basis1[:,:in_channels-1]
+            basis2 = basis2[:,:in_channels-1]
         else:
             if isVerbose:
                 print("existing dimension(in_channels * ker_size) : {}".format(in_channels * ker_size))
@@ -439,8 +439,8 @@ class DoubleAdjacentRBFMag(metaclass=ABCMeta):
             dataArray2 = cp.transpose(cp.reshape(weight_layer2, (out_channels, in_channels * ker_size)))
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
             _, basis2 = self.pcaTool.rbf_kernel_pca(dataArray2, gamma)
-            basis1 = basis1[:,:out_channels]
-            basis2 = basis2[:,:out_channels]
+            basis1 = basis1[:,:out_channels-1]
+            basis2 = basis2[:,:out_channels-1]
         
         return [basis1, basis2]
     
@@ -458,8 +458,8 @@ class DoubleAdjacentRBFMag(metaclass=ABCMeta):
             dataArray2 = weight_layer2
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
             _, basis2 = self.pcaTool.rbf_kernel_pca(dataArray2, gamma)
-            basis1 = basis1[:,:in_dims]
-            basis2 = basis2[:,:in_dims]
+            basis1 = basis1[:,:in_dims-1]
+            basis2 = basis2[:,:in_dims-1]
         else:
             if isVerbose:
                 print("existing dimension(in_dims) : {}".format(in_dims))
@@ -468,8 +468,8 @@ class DoubleAdjacentRBFMag(metaclass=ABCMeta):
             dataArray2 = cp.transpose(weight_layer2)
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
             _, basis2 = self.pcaTool.rbf_kernel_pca(dataArray2, gamma)
-            basis1 = basis1[:,:out_dims]
-            basis2 = basis2[:,:out_dims]
+            basis1 = basis1[:,:out_dims-1]
+            basis2 = basis2[:,:out_dims-1]
         
         return [basis1, basis2]
 
@@ -565,9 +565,9 @@ class TripleAdjacentRBFMag(metaclass=ABCMeta):
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
             _, basis2 = self.pcaTool.rbf_kernel_pca(dataArray2, gamma)
             _, basis3 = self.pcaTool.rbf_kernel_pca(dataArray3, gamma)
-            basis1 = basis1[:,:in_channels]
-            basis2 = basis2[:,:in_channels]
-            basis3 = basis3[:,:in_channels]
+            basis1 = basis1[:,:in_channels-1]
+            basis2 = basis2[:,:in_channels-1]
+            basis3 = basis3[:,:in_channels-1]
         else:
             if isVerbose:
                 print("existing dimension(in_channels * ker_size) : {}".format(in_channels * ker_size))
@@ -578,9 +578,9 @@ class TripleAdjacentRBFMag(metaclass=ABCMeta):
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
             _, basis2 = self.pcaTool.rbf_kernel_pca(dataArray2, gamma)
             _, basis3 = self.pcaTool.rbf_kernel_pca(dataArray3, gamma)
-            basis1 = basis1[:,:out_channels]
-            basis2 = basis2[:,:out_channels]
-            basis3 = basis3[:,:out_channels]
+            basis1 = basis1[:,:out_channels-1]
+            basis2 = basis2[:,:out_channels-1]
+            basis3 = basis3[:,:out_channels-1]
         
         return [basis1, basis2, basis3]
     
@@ -601,9 +601,9 @@ class TripleAdjacentRBFMag(metaclass=ABCMeta):
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
             _, basis2 = self.pcaTool.rbf_kernel_pca(dataArray2, gamma)
             _, basis3 = self.pcaTool.rbf_kernel_pca(dataArray3, gamma)
-            basis1 = basis1[:,:in_dims]
-            basis2 = basis2[:,:in_dims]
-            basis3 = basis3[:,:in_dims]
+            basis1 = basis1[:,:in_dims-1]
+            basis2 = basis2[:,:in_dims-1]
+            basis3 = basis3[:,:in_dims-1]
         else:
             if isVerbose:
                 print("existing dimension(in_dims) : {}".format(in_dims))
@@ -614,8 +614,8 @@ class TripleAdjacentRBFMag(metaclass=ABCMeta):
             _, basis1 = self.pcaTool.rbf_kernel_pca(dataArray1, gamma)
             _, basis2 = self.pcaTool.rbf_kernel_pca(dataArray2, gamma)
             _, basis3 = self.pcaTool.rbf_kernel_pca(dataArray3, gamma)
-            basis1 = basis1[:,:out_dims]
-            basis2 = basis2[:,:out_dims]
-            basis3 = basis3[:,:out_dims]
+            basis1 = basis1[:,:out_dims-1]
+            basis2 = basis2[:,:out_dims-1]
+            basis3 = basis3[:,:out_dims-1]
         
         return [basis1, basis2, basis3]
