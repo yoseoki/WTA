@@ -108,7 +108,7 @@ class SubspaceDiff():
         basis1_revised = basis1_revised[:,::-1]
         index_1 = 0
         for i, a in enumerate(alpha1):
-            if abs(a) < 1e-7 :
+            if abs(a) < 1- 1e-4 :
                 index_1 = i
                 break
         basis1_revised = basis1_revised[:,:index_1]
@@ -118,7 +118,7 @@ class SubspaceDiff():
         basis2_revised = basis2_revised[:,::-1]
         index_2 = 0
         for j, a in enumerate(alpha2):
-            if abs(a) < 1e-7 :
+            if abs(a) < 1- 1e-4 :
                 index_2 = j
                 break
         basis2_revised = basis2_revised[:,:index_2]
