@@ -42,20 +42,23 @@ class WeightPCA():
         print("99%-dimension : {}".format(intrinsic_index))
         print("real-dimension : {}".format(index))
 
-    def print_eigenvalue(self, values, period=1):
+    def print_eigenvalue(self, values):
         values_sum = cp.sum(values)
         print("lambda || cumulative sum || proportion of lambda || proportion of cumulative sum")
         sum_cumul = 0
+        printCounter = 0
         for i, element in enumerate(values):
             sum_cumul += element
-            if i % period == 0:
-                print("{:02d}. ".format(i), end="")
-                print("{:.4f}".format(element), end=" || ")
-                print("{:.4f}".format(sum_cumul), end=" || ")
-                print("{:.4f}".format(element / values_sum), end=" || ")
-                print("{:.4f}".format(sum_cumul / values_sum))
+            print("{:02d}. ".format(i), end="")
+            print("{:.4f}".format(element), end=" || ")
+            print("{:.4f}".format(sum_cumul), end=" || ")
+            print("{:.4f}".format(element / values_sum), end=" || ")
+            print("{:.4f}".format(sum_cumul / values_sum))
+            if element < 1e-6:
+                printCounter += 1
+            if printCounter > 9: break
         
-    def pca_basic(self, dataArray, isVerbose=False, period=1): #  just doing PCA(doing eigen composition about auto-correlation matrix)
+    def pca_basic(self, dataArray, isVerbose=False): #  just doing PCA(doing eigen composition about auto-correlation matrix)
         dataArray_centerized = self.centerize(dataArray)
         r = dataArray_centerized@cp.transpose(dataArray_centerized)
         values, basis = cp.linalg.eigh(r)
@@ -64,11 +67,12 @@ class WeightPCA():
         if isVerbose:
             print("="*20)
             self.print_intrinsic_dimension(values)
-            self.print_eigenvalue(values, period=period)
+            self.print_eigenvalue(values)
+            print(values)
             print("="*20) 
         return [values, basis]
     
-    def pca_lowcost(self, dataArray, isVerbose=False, period=1):
+    def pca_lowcost(self, dataArray, isVerbose=False):
         dataArray_centerized = self.centerize(dataArray)
         n_components = dataArray_centerized.shape[1]
         r = cp.transpose(dataArray_centerized)@dataArray_centerized
@@ -78,22 +82,22 @@ class WeightPCA():
         basisContainer = []
         for i in range(n_components):
             v = projections[:,i][:,None]
-            basisContainer.append(cp.squeeze(dataArray_centerized@v) / cp.sqrt(values[i]))
+            basisContainer.append(cp.squeeze(dataArray@v) / cp.sqrt(values[i]))
         basis = cp.transpose(cp.array(basisContainer))
         if isVerbose:
             print("="*20)
             self.print_intrinsic_dimension(values)
-            self.print_eigenvalue(values, period=period)
+            self.print_eigenvalue(values)
             print("="*20) 
         return [values, basis]
     
-    def pca_proj(self, dataArray, isVerbose=False, period=1): # after doing PCA, project each data to principal subspace
+    def pca_proj(self, dataArray, isVerbose=False): # after doing PCA, project each data to principal subspace
         dataArray_centerized = self.centerize(dataArray)
-        _, basis = self.pca_basic(dataArray, isVerbose=isVerbose, period=period)
+        _, basis = self.pca_basic(dataArray, isVerbose=isVerbose)
         projections = cp.transpose(basis) @ dataArray_centerized
         return projections
 
-    def pca_proj_lowcost(self, dataArray, isVerbose=False, period=1):
+    def pca_proj_lowcost(self, dataArray, isVerbose=False):
         dataArray_centerized = self.centerize(dataArray)
         r = cp.transpose(dataArray_centerized)@dataArray_centerized
         values, projections = cp.linalg.eigh(r)
@@ -102,7 +106,7 @@ class WeightPCA():
         if isVerbose:
             print("="*20)
             self.print_intrinsic_dimension(values)
-            self.print_eigenvalue(values, period=period)
+            self.print_eigenvalue(values)
             print("="*20)
         return projections
 
@@ -120,7 +124,7 @@ class WeightSPCA():
             dataArray_new[:,col] = dataArray_new[:,col] - mean
         return dataArray_new
 
-    def pca_sparse(self, dataArray, alpha=0.25, isVerbose=False, period=1):
+    def pca_sparse(self, dataArray, alpha=0.25, isVerbose=False):
         dataArray_centerized = self.centerize(dataArray)
         n_components = dataArray.shape[1]
         transformer = SparsePCA(n_components=n_components, alpha=alpha, random_state=0)
@@ -131,9 +135,9 @@ class WeightSPCA():
         basis = basis[:,::-1]
         return [np.zeros(n_components,), basis] # it seems we cannot get eigenvalues(variance) with SparsePCA...
     
-    def pca_proj(self, dataArray, alpha=0.25, isVerbose=False, period=1):
+    def pca_proj(self, dataArray, alpha=0.25, isVerbose=False):
         dataArray_centerized = self.centerize(dataArray)
-        _, basis = self.pca_sparse(dataArray, isVerbose=isVerbose, period=period)    
+        _, basis = self.pca_sparse(dataArray, isVerbose=isVerbose)    
         projections = cp.transpose(basis) @ dataArray_centerized
         return projections
         
@@ -158,20 +162,23 @@ class WeightKPCA():
         if not changeFlag: index = values.shape[0]
         print("real-dimension : {}".format(index))
 
-    def print_eigenvalue(self, values, period=1):
+    def print_eigenvalue(self, values):
         values_sum = cp.sum(values)
         print("lambda || cumulative sum || proportion of lambda || proportion of cumulative sum")
         sum_cumul = 0
+        printCounter = 0
         for i, element in enumerate(values):
             sum_cumul += element
-            if i % period == 0:
-                print("{:02d}. ".format(i), end="")
-                print("{:.4f}".format(element), end=" || ")
-                print("{:.4f}".format(sum_cumul), end=" || ")
-                print("{:.4f}".format(element / values_sum), end=" || ")
-                print("{:.4f}".format(sum_cumul / values_sum))
+            print("{:02d}. ".format(i), end="")
+            print("{:.4f}".format(element), end=" || ")
+            print("{:.4f}".format(sum_cumul), end=" || ")
+            print("{:.4f}".format(element / values_sum), end=" || ")
+            print("{:.4f}".format(sum_cumul / values_sum))
+            if element < 1e-6:
+                printCounter += 1
+            if printCounter > 9: break
 
-    def pca_kernel(self, K, isVerbose=False, period=1):
+    def pca_kernel(self, K, isVerbose=False):
         K_centerized = self.centerize(K)
         values, basis = cp.linalg.eigh(K_centerized)
         # b = cp.array([1])
@@ -185,12 +192,12 @@ class WeightKPCA():
         if isVerbose:
             print("="*20)
             self.print_intrinsic_dimension(values)
-            self.print_eigenvalue(values, period=period)
+            self.print_eigenvalue(values)
             print("="*20)
         return [values, basis]
     
-    def pca_proj_kernel(self, K, isVerbose=False, period=1):
-        _, basis = self.pca_kernel(K, isVerbose=isVerbose, period=period)
+    def pca_proj_kernel(self, K, isVerbose=False):
+        _, basis = self.pca_kernel(K, isVerbose=isVerbose)
         K_centerized = self.centerize(K)
         projections = cp.transpose(basis)@K_centerized
         return projections
@@ -212,25 +219,25 @@ class WeightRBFPCA(WeightKPCA):
         K = cp.exp(-gamma * out)
         return K
 
-    def rbf_kernel_pca(self, dataArray, gamma, isVerbose=False, period=1):
+    def rbf_kernel_pca(self, dataArray, gamma, isVerbose=False):
         K = self.make_rbf_K_matrix(dataArray, dataArray, gamma)
-        values, basis = self.pca_kernel(K, isVerbose=isVerbose, period=period)
+        values, basis = self.pca_kernel(K, isVerbose=isVerbose)
         return [values, basis]
 
-    def rbf_kernel_pca_sum(self, dataArray1, dataArray2, gamma, isVerbose=False, period=1):
+    def rbf_kernel_pca_sum(self, dataArray1, dataArray2, gamma, isVerbose=False):
         dataArray = cp.concatenate((dataArray1, dataArray2), axis=1)
-        values, basis = self.rbf_kernel_pca(dataArray, gamma, isVerbose=isVerbose, period=period)
+        values, basis = self.rbf_kernel_pca(dataArray, gamma, isVerbose=isVerbose)
         return [values, basis]
     
-    def rbf_kernel_pca_karcher(self, dataArray1, dataArray2, gamma, isVerbose=False, period=1):
+    def rbf_kernel_pca_karcher(self, dataArray1, dataArray2, gamma, isVerbose=False):
         n_components = dataArray1.shape[1]
         dataArray = cp.concatenate((dataArray1, dataArray2), axis=1)
-        values, basis = self.rbf_kernel_pca(dataArray, gamma, isVerbose=isVerbose, period=period)
+        values, basis = self.rbf_kernel_pca(dataArray, gamma, isVerbose=isVerbose)
         return [values[:n_components], basis[:,:n_components]]
     
-    def rbf_kernel_pca_projection(self, sumArray, dataArray, gamma, isVerbose=False, period=1):
-        _, W = self.rbf_kernel_pca(sumArray, gamma, isVerbose=isVerbose, period=period)
-        _, alphas = self.rbf_kernel_pca(dataArray, gamma, isVerbose=isVerbose, period=period)
+    def rbf_kernel_pca_projection(self, sumArray, dataArray, gamma, isVerbose=False):
+        _, W = self.rbf_kernel_pca(sumArray, gamma, isVerbose=isVerbose)
+        _, alphas = self.rbf_kernel_pca(dataArray, gamma, isVerbose=isVerbose)
         W = W
         alphas = alphas
         K = self.make_rbf_K_matrix(sumArray, dataArray, gamma)
