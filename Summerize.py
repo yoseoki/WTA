@@ -405,14 +405,15 @@ class ProjPlot():
                 for sampleIdx in range(trajNum):
                     start = sampleIdx*sampleNum
                     end = (sampleIdx+1)*sampleNum
-                    plt.scatter(result[i][0][start:end], result[i][1][start:end], c=t, cmap=self.cmapList[sampleIdx%10])
+                    plt.scatter(result[i][0][start:end], result[i][1][start:end], c=t, cmap=self.cmapList[sampleIdx%10], label="traj(layer) {:02d}".format(sampleIdx+1))
             else:
                 sampleNum = len(result[i][0])
                 sampleNum = int(sampleNum / trajNum)
                 for sampleIdx in range(trajNum):
                     start = sampleIdx*sampleNum
                     end = (sampleIdx+1)*sampleNum
-                    plt.scatter(result[i][0][start:end], result[i][1][start:end], color=self.colorList[sampleIdx%20])
+                    plt.scatter(result[i][0][start:end], result[i][1][start:end], color=self.colorList[sampleIdx%20], label="traj(layer) {:02d}".format(sampleIdx+1))
+            plt.legend()
             plt.savefig("result/PCA2D_{}_{}_{}_{:02d}_{}.png".format(self.model_name, distance.name, seedStr, num, label[i]))
             plt.clf()
 
@@ -434,13 +435,14 @@ class ProjPlot():
                 for sampleIdx in range(trajNum):
                     start = sampleIdx*sampleNum
                     end = (sampleIdx+1)*sampleNum
-                    ax.scatter(result[i][0][start:end], result[i][1][start:end], result[i][2][start:end], c=t, cmap=self.cmapList[sampleIdx%10])
+                    ax.scatter(result[i][0][start:end], result[i][1][start:end], result[i][2][start:end], c=t, cmap=self.cmapList[sampleIdx%10], label="traj(layer) {:02d}".format(sampleIdx+1))
             else:
                 sampleNum = len(result[i][0])
                 sampleNum = int(sampleNum / trajNum)
                 for sampleIdx in range(trajNum):
                     start = sampleIdx*sampleNum
                     end = (sampleIdx+1)*sampleNum
-                    ax.scatter(result[i][0][start:end], result[i][1][start:end], result[i][2][start:end], color=self.colorList[sampleIdx%20])
+                    ax.scatter(result[i][0][start:end], result[i][1][start:end], result[i][2][start:end], color=self.colorList[sampleIdx%20], label="traj(layer) {:02d}".format(sampleIdx+1))
+            plt.legend()
             plt.savefig("result/PCA3D_{}_{}_{}_{:02d}_{}.png".format(self.model_name, distance.name, seedStr, num, label[i]))
             plt.clf()
