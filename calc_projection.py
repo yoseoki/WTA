@@ -53,6 +53,58 @@ class Layerwise_grassmann_PCA(AdjacentMag.SingleAdjacentMag):
         projections = self.kpcaTool.pca_proj_kernel(K)
         projections = projections.get()
         return [projections[0,:], projections[1,:], projections[2,:]]
+    
+class Layeracross_grassmann_PCA(AdjacentMag.SingleAdjacentMag):
+    
+    def __call__(self, csvFolder, totalLayerNum, totalSampleNum, loadFlag=False, prefix=None, mask=None):
+        result = self._grassmann_pca(csvFolder, totalLayerNum, totalSampleNum=totalSampleNum, loadFlag=loadFlag, prefix=prefix, mask=mask)
+        return result
+
+    def _grassmann_pca(self, csvFolder, totalLayerNum, totalSampleNum=100, loadFlag=False, prefix=None, mask=None):
+
+        # calculate
+        print("layer total")
+        _totalLayerNum = totalLayerNum
+        
+        if not loadFlag:
+            basisContainer = []
+            for layerNum in range(1, totalLayerNum+1):
+                for i in tqdm(range(totalSampleNum)):
+                    if self.isConvLayer(layerNum):
+                        if layerNum == 0 and i == 0: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i, isVerbose=True)
+                        else: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i)
+                    elif self.isFcLayer(layerNum):
+                        if layerNum == 0 and i == 0: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i, isVerbose=True)
+                        else: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i)
+                    basisContainer.append(basis)
+
+            K = self.dsTool.construct_K_matrix(basisContainer)
+            self.dsTool.save_K_matrix(K, prefix)
+        else:
+            K = self.dsTool.load_K_matrix(prefix)
+
+        # masking
+        if mask is not None:
+            K = self.dsTool.mask_K_matrix(K, mask, _totalLayerNum)
+            _totalLayerNum = len(mask)
+
+        # KPCA - projection
+        projections = self.kpcaTool.pca_proj_kernel(K)
+
+        if True:
+            # re-centralize
+            for i in range(_totalLayerNum):
+                trajectory_center = copy.deepcopy(projections[:,i*totalSampleNum])
+                for j in range(totalSampleNum):
+                    sampleNum = i*totalSampleNum + j
+                    projections[:,sampleNum] = projections[:,sampleNum] - trajectory_center
+
+            # re-PCA - projection
+            projections_new = self.pcaTool.pca_proj(projections)
+            projections = projections_new
+
+        projections = projections.get()
+        return [projections[0,:], projections[1,:], projections[2,:]]
 
 class Layerwise_grassmann_PCA_plural(AdjacentMag.SingleAdjacentMag):
     
