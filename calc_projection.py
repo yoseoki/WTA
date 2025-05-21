@@ -22,8 +22,8 @@ class Layerwise_grassmann_PCA(AdjacentMag.SingleAdjacentMag):
         if not loadFlag:
             basisContainer = []
             for i in tqdm(range(totalSampleNum)):
-                if i == 0: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i+1, isVerbose=True)
-                else: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i+1)  
+                if i == 0: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i, isVerbose=True)
+                else: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i)  
                 basisContainer.append(basis)
             K = self.dsTool.construct_K_matrix(basisContainer)
             self.dsTool.save_K_matrix(K, prefix)
@@ -42,8 +42,8 @@ class Layerwise_grassmann_PCA(AdjacentMag.SingleAdjacentMag):
         if not loadFlag:
             basisContainer = []
             for i in tqdm(range(totalSampleNum)):
-                if i == 0: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i+1, isVerbose=True)
-                else: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i+1)  
+                if i == 0: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i, isVerbose=True)
+                else: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i)  
                 basisContainer.append(basis)
             K = self.dsTool.construct_K_matrix(basisContainer)
             self.dsTool.save_K_matrix(K, prefix)
@@ -76,8 +76,8 @@ class Layerwise_grassmann_PCA_plural(AdjacentMag.SingleAdjacentMag):
             basisContainer = []
             for csvIndex, csvFolder in enumerate(csvFolderList):
                 for i in tqdm(range(totalSampleNum)):
-                    if csvIndex == 0 and i == 0: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i+1, isVerbose=True)
-                    else: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i+1)  
+                    if csvIndex == 0 and i == 0: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i, isVerbose=True)
+                    else: basis = self._get_adjacent_basis_conv(csvFolder, layerNum, i)  
                     basisContainer.append(basis)
 
             K = self.dsTool.construct_K_matrix(basisContainer)
@@ -118,8 +118,8 @@ class Layerwise_grassmann_PCA_plural(AdjacentMag.SingleAdjacentMag):
             basisContainer = []
             for csvIndex, csvFolder in enumerate(csvFolderList):
                 for i in tqdm(range(totalSampleNum)):
-                    if csvIndex == 0 and i == 0: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i+1, isVerbose=True)
-                    else: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i+1)  
+                    if csvIndex == 0 and i == 0: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i, isVerbose=True)
+                    else: basis = self._get_adjacent_basis_fc(csvFolder, layerNum, i)  
                     basisContainer.append(basis)
 
             K = self.dsTool.construct_K_matrix(basisContainer)
