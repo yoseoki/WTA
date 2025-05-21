@@ -2,6 +2,8 @@ from abc import *
 import pandas as pd
 import cupy as cp
 from . import SUBSPACE
+import os
+from tqdm import tqdm
 
 smTool = SUBSPACE.SubspaceDiff()
 
@@ -58,19 +60,23 @@ class GrassmannDist(Dist):
         rowNum = len(basisContainer1)
         colNum = len(basisContainer2)
         K = cp.zeros((rowNum, colNum))
-        for i, basis_i in enumerate(basisContainer1):
+        i = 0
+        for basis_i in tqdm(basisContainer1):
             for j, basis_j in enumerate(basisContainer2):
                 K[i,j] = self.calc_dist(basis_i, basis_j)
+            i += 1
         return K
     
     def construct_K_matrix(self, basisContainer):
         rowNum = len(basisContainer)
         colNum = len(basisContainer)
         K = cp.zeros((rowNum, colNum))
-        for i, basis_i in enumerate(basisContainer):
+        i = 0
+        for basis_i in tqdm(basisContainer):
             for j, basis_j in enumerate(basisContainer):
                 if j > i:
                     tmp = self.calc_dist(basis_i, basis_j)
                     K[i,j] = tmp
                     K[j,i] = tmp
+            i += 1
         return K
